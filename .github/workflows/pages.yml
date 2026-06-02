@@ -37,20 +37,15 @@ jobs:
       - name: Build app
         run: yarn gulp build
 
-      - name: Prepare Pages artifact
+      - name: Verify Pages artifact
         run: |
-          mkdir _site
-          rsync -a ./ _site/ \
-            --exclude .git \
-            --exclude .github \
-            --exclude node_modules \
-            --exclude __tests__ \
-            --exclude _site
+          test -f build/index.html
+          find build -maxdepth 2 -type f | sort
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: build
 
   deploy:
     environment:
@@ -62,3 +57,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
